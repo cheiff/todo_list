@@ -3,8 +3,7 @@ var EnterKey = 13;
 $(document).ready(function() {
   $('#new-todo').keypress(function(e) {
     if (e.which === EnterKey) {
-      $element = $('#main');
-      $element.show();
+      $('#main').show();
       $todoList = $('#todo-list');
       $todoList.append(
         "<li>" +
@@ -15,6 +14,10 @@ $(document).ready(function() {
           "</div>" +
         "</li>"
       );
+      $newListItem = $todoList.find("li").last()
+      $newListItem.find('.destroy').on('click', function() {
+        $newListItem.remove();
+      });
     }
   });
 });
