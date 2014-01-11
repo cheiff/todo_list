@@ -14,10 +14,23 @@ $(document).ready(function() {
           "</div>" +
         "</li>"
       );
-      $newListItem = $todoList.find("li").last()
-      $newListItem.find('.destroy').on('click', function() {
-        $newListItem.remove();
+
+      $todoList.find('li').each(function() {
+        var $currentListItem = $(this);
+
+        $currentListItem.find('.destroy').on('click', function(e) {
+          $currentListItem = $(this).closest('li');
+
+          $currentListItem.remove();
+        });
+
+        $currentListItem.find('.toggle').on('click', function(e) {
+          var $currentListItemLabel = $(this).closest('li').find('label');
+
+          $currentListItemLabel.css('text-decoration', 'line-through');
+        });
       });
-    }
+    } // end if
   });
 });
+
