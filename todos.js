@@ -10,23 +10,25 @@ var todoSave = function(todo){
   } 
   ls.setItem('id-'+count,JSON.stringify(todoObject));
   dumpLocalstorage();
+  todoAjaxSave();
   return count++;
 }
 
 var todoToggle = function(id){
-  console.log(id);
+  //console.log(id);
   var currentTodoString =  $.localStorage('id-'+id);
-  console.log(currentTodoString);
-  console.log(currentTodoString.checked);
+  //console.log(currentTodoString);
+  //console.log(currentTodoString.checked);
   var currentTodo = JSON.parse(currentTodoString);
-  console.log(currentTodo.checked);
+  //console.log(currentTodo.checked);
   if (currentTodo.checked){
     currentTodo.checked = false;
   } else {
     currentTodo.checked = true;
   }
-  console.log(currentTodo.checked);
+  //console.log(currentTodo.checked);
   ls.setItem('id-'+id,JSON.stringify(currentTodo));
+//  todoAjaxSave();
 //  dumpLocalstorage();
 }
    
@@ -35,21 +37,38 @@ var todoLoad = function(){
 
 }
 
-var todoStateSave = function(todo){
+var todoAjaxSave = function(){
+  console.log('ajax');
+  $.ajax({
+           type: "POST",
+            url: "backend.php",
+            data: {data: JSON.stringify(localStorageToArray())},
+            error: function(xhr, ajaxOptions, thrownError) {
+              alert(xhr.status);
+              alert(thrownError);
+            }
+             success: function(data) {
+               $('#output').html(data);
+             }
+  });
+}
 
-}
-var todoDelete = function(id){
-  deleteid = parseInt(id)-1;
-  todosArray.splice(deleteid,1);  
-  dumpArray();
-}
 var dumpLocalstorage = function(){
   for (var i = 1; i < count+1; i++){
     var line = ls.getItem('id-'+i);
     if(typeof(line)==='string')
       console.log(JSON.stringify(line));
-
   }
+}
+
+var localStorageToArray = function(){
+  var myArray = [];
+  for (var i = 1; i < count+1; i++){
+    var line = $.localStorage('id-'+i);
+    if(typeof(line)==='string')
+    myArray[i] = line;
+  }
+  return myArray;
 }
 
 $(document).ready(function() {
@@ -90,7 +109,6 @@ $(document).ready(function() {
           var $currentId = $(this).closest('li').attr('id');
           todoToggle($currentId);
           $currentListItemLabel.toggleClass('done');
-
         });
       });
     //clear form
