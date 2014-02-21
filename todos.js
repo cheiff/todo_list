@@ -27,7 +27,7 @@ var todoToggle = function(id){
   }
   console.log(currentTodo.checked);
   ls.setItem('id-'+id,JSON.stringify(currentTodo));
-  dumpLocalstorage();
+//  dumpLocalstorage();
 }
    
 
@@ -51,12 +51,6 @@ var dumpLocalstorage = function(){
 
   }
 }
-var dumpArray = function(){
-  var myArray = todosArray.splice();
-  todosArray.forEach(function(x,idx){
-      console.log('['+idx+' => '+JSON.stringify(x)+']');
-  });
-}
 
 $(document).ready(function() {
   $('#new-todo').keypress(function(e) {
@@ -78,25 +72,23 @@ $(document).ready(function() {
       }
 
       //remove
-      $todoList.find('li').each(function() {
+      //$todoList.find('li').('#'+id+).each(function() {
+      $('#'+id).each(function() {
         var $currentListItem = $(this);
         $currentListItem.find('.destroy').on('click', function(e) {
           $currentListItem = $(this).closest('li');
           var deleteid = $currentListItem.attr('id');
           $currentListItem.remove();
           ls.removeItem('id-'+deleteid);
-          dumpLocalstorage();
+          //dumpLocalstorage();
         });
 
         //toggle checked
         $currentListItem.find('.toggle').on('click', function(e) {
+          console.log($(this));
           var $currentListItemLabel = $(this).closest('li').find('label');
-//          $currentListItemLabel.css('text-decoration', 'line-through');
           var $currentId = $(this).closest('li').attr('id');
-          console.log($currentId);
-          $(this).prop('disabled', true);
           todoToggle($currentId);
-          $(this).prop('disabled', false);
           $currentListItemLabel.toggleClass('done');
 
         });
