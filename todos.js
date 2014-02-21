@@ -1,14 +1,35 @@
 var EnterKey = 13;
-
-var todosArray = [];
+var count = 1;
+var ls = $.localStorage();
+ls.clear();
 
 var todoSave = function(todo){
-  todosArray.push([{"value":todo},{"checked":false}]);
-  var index = todosArray.length-1;
-  console.log(todosArray[index]);
-  dumpArray();
-  return todosArray.length;
+  var todoObject = {
+      "value": todo,
+      "checked": false
+  } 
+  ls.setItem('id-'+count,JSON.stringify(todoObject));
+  dumpLocalstorage();
+  return count++;
 }
+
+var todoToggle = function(id){
+  console.log(id);
+  var currentTodoString =  $.localStorage('id-'+id);
+  console.log(currentTodoString);
+  console.log(currentTodoString.checked);
+  var currentTodo = JSON.parse(currentTodoString);
+  console.log(currentTodo.checked);
+  if (currentTodo.checked){
+    currentTodo.checked = false;
+  } else {
+    currentTodo.checked = true;
+  }
+  console.log(currentTodo.checked);
+  ls.setItem('id-'+id,JSON.stringify(currentTodo));
+  dumpLocalstorage();
+}
+   
 
 var todoLoad = function(){
 
@@ -21,6 +42,14 @@ var todoDelete = function(id){
   deleteid = parseInt(id)-1;
   todosArray.splice(deleteid,1);  
   dumpArray();
+}
+var dumpLocalstorage = function(){
+  for (var i = 1; i < count+1; i++){
+    var line = ls.getItem('id-'+i);
+    if(typeof(line)==='string')
+      console.log(JSON.stringify(line));
+
+  }
 }
 var dumpArray = function(){
   var myArray = todosArray.splice();
@@ -55,13 +84,21 @@ $(document).ready(function() {
           $currentListItem = $(this).closest('li');
           var deleteid = $currentListItem.attr('id');
           $currentListItem.remove();
-          todoDelete(deleteid);
+          ls.removeItem('id-'+deleteid);
+          dumpLocalstorage();
         });
 
         //toggle checked
         $currentListItem.find('.toggle').on('click', function(e) {
           var $currentListItemLabel = $(this).closest('li').find('label');
-          $currentListItemLabel.css('text-decoration', 'line-through');
+//          $currentListItemLabel.css('text-decoration', 'line-through');
+          var $currentId = $(this).closest('li').attr('id');
+          console.log($currentId);
+          $(this).prop('disabled', true);
+          todoToggle($currentId);
+          $(this).prop('disabled', false);
+          $currentListItemLabel.toggleClass('done');
+
         });
       });
     //clear form

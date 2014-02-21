@@ -209,3 +209,7 @@ body {
 #credits a {
 	color: #888;
 }
+
+.done {
+  text-decoration: line-through;
+}
