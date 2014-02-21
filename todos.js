@@ -46,7 +46,7 @@ var todoAjaxSave = function(){
             error: function(xhr, ajaxOptions, thrownError) {
               alert(xhr.status);
               alert(thrownError);
-            }
+            },
              success: function(data) {
                $('#output').html(data);
              }
